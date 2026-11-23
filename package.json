@@ -1,0 +1,23 @@
+{
+  "name": "projeto-qualidade-software",
+  "version": "1.0.0",
+  "description": "**Sistema escolhido:** [Practice Software Testing](https://practicesoftwaretesting.com/).",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BrunoFerreiraLyra/projeto-qualidade-software.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/BrunoFerreiraLyra/projeto-qualidade-software/issues"
+  },
+  "homepage": "https://github.com/BrunoFerreiraLyra/projeto-qualidade-software#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.65.1",
+    "@types/node": "^26.6.6"
+  }
+}
