@@ -1,8 +1,8 @@
-const { test, expect } = require('@playwright/test');
+const { test, expect } = require('./fixtures');
 const { randomUUID } = require('node:crypto');
 
-// Conta pública de demonstração.
-// Pode ser substituída por uma conta própria usando variáveis de ambiente.
+// Conta pública de demonstração documentada pelo Toolshop.
+// Se ela mudar, é possível informar outra por variáveis de ambiente.
 const conta = {
   email:
     process.env.TOOLSHOP_EMAIL ||
@@ -19,10 +19,7 @@ const conta = {
 
 const senhaCadastro = 'Teste@2026Seguro';
 
-// Aceita espaços antes e depois do nome no HTML.
-const nomeProduto = /^\s*Combination Pliers\s*$/;
-
-// Converte "$12.50" em 1250 centavos.
+// Converte "$12.50" em 1250 centavos para comparar valores.
 function centavos(texto) {
   const valor = texto.replace(/[^0-9.]/g, '');
 
@@ -39,16 +36,15 @@ async function entrar(page, email, senha) {
   await page.getByTestId('login-submit').click();
 }
 
-// Cada teste prepara seu próprio carrinho.
+// Cada teste de carrinho chama esta função.
+// Assim, nenhum depende de outro teste ter sido executado.
 async function prepararCarrinho(page) {
-  await page.goto('/');
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
 
-  const produto = page
-    .getByTestId('product-name')
-    .filter({ hasText: nomeProduto });
-
-  await expect(produto).toBeVisible();
-  await produto.click();
+  // Produto específico para tornar a execução reproduzível.
+  await page
+    .getByRole('heading', { name: 'Combination Pliers', exact: true })
+    .click();
 
   await expect(page.getByTestId('quantity')).toHaveValue('1');
   await expect(page.getByTestId('add-to-cart')).toBeEnabled();
@@ -57,14 +53,22 @@ async function prepararCarrinho(page) {
     await page.getByTestId('unit-price').innerText()
   );
 
+  const inclusaoPendente = page.waitForResponse(response =>
+    response.request().method() === 'POST' &&
+    /^\/carts\/[^/]+$/.test(new URL(response.url()).pathname),
+  { timeout: 30000 });
+
   await page.getByTestId('add-to-cart').click();
+
+  const inclusao = await inclusaoPendente;
+  expect(inclusao.ok(), 'A API deve confirmar a inclusão no carrinho')
+    .toBeTruthy();
 
   await expect(page.getByTestId('cart-quantity')).toHaveText('1');
 
   await page.getByTestId('nav-cart').click();
 
   await expect(page.getByTestId('product-title')).toHaveCount(1);
-
   await expect(page.getByTestId('product-title'))
     .toContainText('Combination Pliers');
 
@@ -72,7 +76,7 @@ async function prepararCarrinho(page) {
 }
 
 async function preencherCadastro(page, email) {
-  await page.goto('/auth/register');
+  await page.goto('/auth/register', { waitUntil: 'domcontentloaded' });
 
   await page.getByTestId('first-name').fill('Pessoa');
   await page.getByTestId('last-name').fill('Teste');
@@ -80,7 +84,7 @@ async function preencherCadastro(page, email) {
   await page.getByTestId('country').selectOption('BR');
   await page.getByTestId('postal_code').fill('50000000');
 
-  // Campo presente em versões recentes do sistema.
+  // O campo foi acrescentado em versões recentes do sistema.
   const numero = page.getByTestId('house_number');
 
   if (await numero.count()) {
@@ -100,16 +104,18 @@ async function preencherCadastro(page, email) {
   await page.getByTestId('password').fill(senhaCadastro);
 }
 
+// Identifica a resposta da pesquisa.
+// Aceita GET e QUERY, usados em diferentes versões do Toolshop.
 function respostaDeBusca(response) {
   const caminho = new URL(response.url()).pathname;
 
-  return (
-    caminho.endsWith('/products/search') &&
-    response.request().method() !== 'OPTIONS'
-  );
+  return caminho.endsWith('/products/search') &&
+    response.request().method() !== 'OPTIONS';
 }
 
 async function pesquisar(page, termo) {
+  // Aguarda o catálogo inicial antes de disparar outra consulta.
+  await expect(page.getByTestId('product-name').first()).toBeVisible();
   await page.getByTestId('search-query').fill(termo);
 
   const respostaPendente = page.waitForResponse(respostaDeBusca);
@@ -118,20 +124,17 @@ async function pesquisar(page, termo) {
 
   const resposta = await respostaPendente;
 
-  expect(
-    resposta.ok(),
-    `A pesquisa retornou HTTP ${resposta.status()}`
-  ).toBeTruthy();
+  // Evita confundir erro do servidor com uma busca sem resultados.
+  expect(resposta.ok(), `A pesquisa retornou HTTP ${resposta.status()}`)
+    .toBeTruthy();
 
-  await expect(
-    page.getByTestId('search_completed')
-  ).toBeVisible();
+  await expect(page.getByTestId('search_completed')).toBeVisible();
 }
 
 // ---------------- LOGIN ----------------
 
 test('CT-01 - login com credenciais válidas', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
   await page.getByTestId('nav-sign-in').click();
 
   await entrar(page, conta.email, conta.senha);
@@ -140,23 +143,19 @@ test('CT-01 - login com credenciais válidas', async ({ page }) => {
     page,
     'O login não chegou à conta. Confira a mensagem da tela e as credenciais.'
   ).toHaveURL(/\/account\/?$/);
-
-  await expect(page.getByTestId('nav-menu'))
-    .toContainText(conta.nome);
+  await expect(page.getByTestId('nav-menu')).toContainText(conta.nome);
 });
 
 test('CT-02 - login com senha incorreta', async ({ page }) => {
-  await page.goto('/auth/login');
+  await page.goto('/auth/login', { waitUntil: 'domcontentloaded' });
 
   await entrar(page, conta.email, 'SenhaIncorreta@987');
 
   await expect(page.getByTestId('login-error')).toBeVisible();
-
   await expect(page.getByTestId('login-error'))
     .toContainText(/invalid email or password/i);
 
   await expect(page).toHaveURL(/\/auth\/login\/?$/);
-
   await expect(page.getByTestId('nav-sign-in')).toBeVisible();
 });
 
@@ -165,8 +164,7 @@ test('CT-02 - login com senha incorreta', async ({ page }) => {
 test('CT-03 - adicionar produto ao carrinho', async ({ page }) => {
   const preco = await prepararCarrinho(page);
 
-  await expect(page.getByTestId('product-quantity'))
-    .toHaveValue('1');
+  await expect(page.getByTestId('product-quantity')).toHaveValue('1');
 
   expect(
     centavos(await page.getByTestId('product-price').innerText())
@@ -183,8 +181,7 @@ test('CT-04 - alterar quantidade de 1 para 2', async ({ page }) => {
   await page.getByTestId('product-quantity').fill('2');
   await page.getByTestId('product-quantity').press('Tab');
 
-  await expect(page.getByTestId('product-quantity'))
-    .toHaveValue('2');
+  await expect(page.getByTestId('product-quantity')).toHaveValue('2');
 
   await expect.poll(async () =>
     centavos(await page.getByTestId('line-price').innerText())
@@ -202,18 +199,24 @@ test('CT-05 - remover produto do carrinho', async ({ page }) => {
     has: page.getByTestId('product-title'),
   });
 
+  const remocaoPendente = page.waitForResponse(response =>
+    response.request().method() === 'DELETE' &&
+    /^\/carts\/[^/]+\/product\/[^/]+$/.test(new URL(response.url()).pathname),
+  { timeout: 30000 });
+
   await linha.locator('a.btn-danger').click();
 
-  await expect(page.getByTestId('product-title'))
-    .toHaveCount(0);
+  const remocao = await remocaoPendente;
+  expect(remocao.ok(), 'A API deve confirmar a remoção do produto')
+    .toBeTruthy();
 
-  await expect(page.getByText(/cart is empty/i))
-    .toBeVisible();
+  await expect(page.getByTestId('product-title')).toHaveCount(0);
+  await expect(page.getByText(/cart is empty/i)).toBeVisible();
 
+  // Algumas versões ocultam o total quando o carrinho fica vazio.
+  // Se ele continuar visível, precisa ser zero.
   const total = page.getByTestId('cart-total');
 
-  // Se o total continuar na página, deve ser zero.
-  // Se for removido, registra essa apresentação no relatório.
   if (await total.count()) {
     await expect.poll(async () =>
       centavos(await total.innerText())
@@ -233,6 +236,7 @@ test('CT-05 - remover produto do carrinho', async ({ page }) => {
 test('CT-06 - cadastro sem e-mail obrigatório', async ({ page }) => {
   await preencherCadastro(page, '');
 
+  // Observa se o formulário tentou cadastrar uma conta no servidor.
   const envios = [];
 
   page.on('request', request => {
@@ -252,11 +256,11 @@ test('CT-06 - cadastro sem e-mail obrigatório', async ({ page }) => {
     .toContainText(/required/i);
 
   await expect(page).toHaveURL(/\/auth\/register\/?$/);
-
   expect(envios).toHaveLength(0);
 });
 
 test('CT-07 - cadastrar conta válida e fazer login', async ({ page }) => {
+  // Um endereço diferente por execução evita cadastro duplicado.
   const email = `grupo.${randomUUID()}@example.com`;
 
   await preencherCadastro(page, email);
@@ -267,15 +271,13 @@ test('CT-07 - cadastrar conta válida e fazer login', async ({ page }) => {
   await entrar(page, email, senhaCadastro);
 
   await expect(page).toHaveURL(/\/account\/?$/);
-
-  await expect(page.getByTestId('nav-menu'))
-    .toContainText('Pessoa');
+  await expect(page.getByTestId('nav-menu')).toContainText('Pessoa');
 });
 
 // ---------------- PESQUISA ----------------
 
 test('CT-08 - pesquisar produto existente', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
   await pesquisar(page, 'Hammer');
 
   const produtos = page
@@ -284,19 +286,16 @@ test('CT-08 - pesquisar produto existente', async ({ page }) => {
 
   await expect(produtos.first()).toBeVisible();
 
-  const nomes = await produtos.allTextContents();
-
-  expect(nomes.length).toBeGreaterThan(0);
-
-  for (const nome of nomes) {
-    expect(nome.toLowerCase()).toContain('hammer');
-  }
+  // A resposta HTTP chega antes de o Angular atualizar a lista.
+  // A asserção consulta novamente o DOM até a renderização terminar.
+  await expect(produtos.first()).toContainText(/hammer/i);
+  await expect(produtos.filter({ hasNotText: /hammer/i })).toHaveCount(0);
 
   await expect(page.getByTestId('no-results')).toHaveCount(0);
 });
 
 test('CT-09 - pesquisar termo sem correspondência', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
   await pesquisar(page, 'xyzabc123');
 
   await expect(page.getByTestId('no-results')).toBeVisible();
@@ -309,13 +308,9 @@ test('CT-09 - pesquisar termo sem correspondência', async ({ page }) => {
 // ---------------- FILTRO ----------------
 
 test('CT-10 - filtrar categoria e remover filtro', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  await expect(page.getByTestId('product-name').first()).toBeVisible();
 
-  await expect(
-    page.getByTestId('product-name').first()
-  ).toBeVisible();
-
-  // Nome confirmado no registro da execução: Hammer, no singular.
   const filtro = page.getByRole('checkbox', {
     name: 'Hammer',
     exact: true,
@@ -327,12 +322,10 @@ test('CT-10 - filtrar categoria e remover filtro', async ({ page }) => {
   const resultados = page.getByTestId('filter_completed');
 
   await expect(resultados).toBeVisible();
+  await expect(resultados.getByTestId('product-name').first())
+    .toBeVisible();
 
-  await expect(
-    resultados.getByTestId('product-name').first()
-  ).toBeVisible();
-
-  // Verifica os produtos da página de resultados exibida.
+  // Confere a categoria na página de cada produto exibido.
   const links = await resultados
     .locator('a.card')
     .evaluateAll(elementos =>
@@ -346,8 +339,9 @@ test('CT-10 - filtrar categoria e remover filtro', async ({ page }) => {
   try {
     for (const link of links) {
       expect(link).toBeTruthy();
-
-      await detalhe.goto(new URL(link, page.url()).href);
+      await detalhe.goto(new URL(link, page.url()).href, {
+        waitUntil: 'domcontentloaded',
+      });
 
       await expect(
         detalhe.locator('[aria-label="category"]')
@@ -360,26 +354,19 @@ test('CT-10 - filtrar categoria e remover filtro', async ({ page }) => {
   await filtro.uncheck();
 
   await expect(filtro).not.toBeChecked();
+  await expect(page.getByTestId('filter_completed')).toBeVisible();
 
+  // Confirma que um produto de outra categoria voltou à listagem.
   await expect(
-    page.getByTestId('filter_completed')
-  ).toBeVisible();
-
-  // Um produto de outra categoria deve voltar à listagem.
-  await expect(
-    page.getByTestId('product-name')
-      .filter({ hasText: nomeProduto })
+    page.getByRole('heading', { name: 'Combination Pliers', exact: true })
   ).toBeVisible();
 });
 
 // ---------------- RESPOSTA SIMULADA ----------------
 
 test('SIM-01 - busca vazia com resposta simulada', async ({ page }) => {
-  await page.goto('/');
-
-  await expect(
-    page.getByTestId('product-name').first()
-  ).toBeVisible();
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  await expect(page.getByTestId('product-name').first()).toBeVisible();
 
   let respostaSimulada = false;
 
@@ -410,9 +397,7 @@ test('SIM-01 - busca vazia com resposta simulada', async ({ page }) => {
   await pesquisar(page, 'produto-simulado');
 
   expect(respostaSimulada).toBe(true);
-
-  await expect(page.getByTestId('no-results'))
-    .toBeVisible();
+  await expect(page.getByTestId('no-results')).toBeVisible();
 
   await expect(
     page.getByTestId('search_completed').getByTestId('product-name')

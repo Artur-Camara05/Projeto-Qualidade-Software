@@ -18,7 +18,7 @@ Os seis integrantes devem escolher suas partes e preencher os responsáveis.
 |---|---|---|
 | 1. Planejamento | A definir | Combinar o escopo, a estratégia de verificação e validação, os riscos, as prioridades e os critérios para iniciar e encerrar os testes. |
 | 2. Testes manuais e exploratórios | A definir | Criar e executar casos manuais. Realizar sessões exploratórias com objetivo definido e registrar ações, resultados e evidências. |
-| 3. Testes automatizados | A definir | Desenvolver testes adequados ao escopo, analisar cobertura, justificar o uso de mocks/stubs e organizar os testes de regressão. |
+| 3. Testes automatizados | Artur Camara De Andarde Silva — 00000853139 | Desenvolver testes adequados ao escopo, analisar cobertura, justificar o uso de mocks/stubs e organizar os testes de regressão. |
 | 4. Qualidade de software | A definir | Revisar código, analisar métricas e code smells e propor refatorações. Propor a melhoria ou correção de uma funcionalidade, com critérios de qualidade e análise dos impactos. |
 | 5. Gestão de defeitos | A definir | Organizar os bugs encontrados pelo grupo, com passos para reproduzir, resultado esperado e observado, evidências, severidade, prioridade e acompanhamento. |
 | 6. CI/CD | A definir | Configurar ou apresentar uma proposta detalhada de pipeline com build, testes automáticos e critérios de aprovação. |
@@ -40,7 +40,22 @@ Registrem o ambiente, a data e quem executou os testes. As análises devem expli
 
 O PDF deve reunir a identificação dos integrantes, as seis frentes do trabalho, a proposta de melhoria e seus impactos, as conclusões e as evidências. Incluam o link do repositório com acesso liberado. Todos participam da revisão e da apresentação.
 
-## Referências
+## Executar os testes automatizados
+
+Na pasta que contém `package.json`:
+
+```powershell
+npm ci
+npx playwright install chromium
+npm test
+npm run report
+```
+
+A suíte contempla CT-01 a CT-10 do planejamento e SIM-01 com stub. Consulte o [guia de execução](docs/guia-execucao.md), a [documentação da automação e cobertura](docs/testes-automatizados.md) e as [evidências da última execução](evidencias/ultima-execucao/resumo.md).
+
+Os comandos `test:smoke`, `test:regressao`, `test:stub`, `test:headed` e `test:ui` permitem selecionar ou acompanhar os testes. O cadastro cria uma conta fictícia por execução no ambiente de demonstração. Nenhum comando faz commit ou push.
+
+## Fontes do sistema
 
 - [Site para testar](https://practicesoftwaretesting.com/)
 - [Documentação da API](https://api.practicesoftwaretesting.com/api/documentation)

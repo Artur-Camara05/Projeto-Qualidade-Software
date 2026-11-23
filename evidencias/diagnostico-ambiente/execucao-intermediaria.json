@@ -1,0 +1,203 @@
+{
+  "inicio": "2026-11-23T23:06:29.652Z",
+  "fim": "2026-11-23T23:08:07.963Z",
+  "fuso": "America/Sao_Paulo",
+  "executor": "Codex (execução assistida; revisão humana pendente)",
+  "sistema": "Windows_NT 10.0.26200 x64",
+  "node": "v22.15.0",
+  "playwright": "1.65.1",
+  "baseURL": "https://practicesoftwaretesting.com",
+  "status": "failed",
+  "duracaoMs": 98221.47,
+  "metricas": {
+    "planejados": 10,
+    "automatizados": 10,
+    "executados": 10,
+    "aprovados": 8,
+    "coberturaFuncional": "100.0%",
+    "taxaExecucao": "100.0%",
+    "taxaAprovacao": "80.0%"
+  },
+  "casos": [
+    {
+      "id": "CT-01",
+      "titulo": "CT-01 - login com credenciais válidas",
+      "status": "passed",
+      "duracaoMs": 5559,
+      "ambiente": {
+        "navegador": "chromium",
+        "versao": "159.0.8154.6",
+        "url": "https://practicesoftwaretesting.com/account",
+        "titulo": "Overview - Practice Software Testing - Toolshop - v5.0"
+      },
+      "anexos": [
+        "capturas/CT-01.png"
+      ],
+      "erros": []
+    },
+    {
+      "id": "CT-02",
+      "titulo": "CT-02 - login com senha incorreta",
+      "status": "passed",
+      "duracaoMs": 4141,
+      "ambiente": {
+        "navegador": "chromium",
+        "versao": "159.0.8154.6",
+        "url": "https://practicesoftwaretesting.com/auth/login",
+        "titulo": "Login - Practice Software Testing - Toolshop - v5.0"
+      },
+      "anexos": [
+        "capturas/CT-02.png"
+      ],
+      "erros": []
+    },
+    {
+      "id": "CT-03",
+      "titulo": "CT-03 - adicionar produto ao carrinho",
+      "status": "failed",
+      "duracaoMs": 7860,
+      "ambiente": {
+        "navegador": "chromium",
+        "versao": "159.0.8154.6",
+        "url": "https://practicesoftwaretesting.com/checkout",
+        "titulo": "Checkout - Practice Software Testing - Toolshop - v5.0"
+      },
+      "anexos": [
+        "capturas/CT-03.png"
+      ],
+      "erros": [
+        "Error: browserContext.close: EBUSY: resource busy or locked, open 'C:\\Users\\artur\\OneDrive\\Documentos\\Teste e qualidade\\projeto-qualidade-software\\projeto-qualidade-software\\test-results\\.playwright-artifacts-0\\traces\\be0ac55e55867c9dc557-114153ef831881f53195-recording4.trace'"
+      ]
+    },
+    {
+      "id": "CT-04",
+      "titulo": "CT-04 - alterar quantidade de 1 para 2",
+      "status": "passed",
+      "duracaoMs": 10372,
+      "ambiente": {
+        "navegador": "chromium",
+        "versao": "159.0.8154.6",
+        "url": "https://practicesoftwaretesting.com/checkout",
+        "titulo": "Checkout - Practice Software Testing - Toolshop - v5.0"
+      },
+      "anexos": [
+        "capturas/CT-04.png"
+      ],
+      "erros": []
+    },
+    {
+      "id": "CT-05",
+      "titulo": "CT-05 - remover produto do carrinho",
+      "status": "failed",
+      "duracaoMs": 19829,
+      "ambiente": {
+        "navegador": "chromium",
+        "versao": "159.0.8154.6",
+        "url": "https://practicesoftwaretesting.com/product/01M85A78M8ZCSEJBH0TB198PAR",
+        "titulo": "Combination Pliers - Practice Software Testing - Toolshop - v5.0"
+      },
+      "anexos": [
+        "capturas/CT-05.png"
+      ],
+      "erros": [
+        "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByTestId('cart-quantity')\nExpected: \u001b[32m\"1\"\u001b[39m\nTimeout: 15000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toHaveText\" getByTestId('cart-quantity') with timeout 15000ms\u001b[22m\n\u001b[2m  - waiting for getByTestId('cart-quantity')\u001b[22m\n"
+      ]
+    },
+    {
+      "id": "CT-06",
+      "titulo": "CT-06 - cadastro sem e-mail obrigatório",
+      "status": "passed",
+      "duracaoMs": 6703,
+      "ambiente": {
+        "navegador": "chromium",
+        "versao": "159.0.8154.6",
+        "url": "https://practicesoftwaretesting.com/auth/register",
+        "titulo": "Register - Practice Software Testing - Toolshop - v5.0"
+      },
+      "anexos": [
+        "capturas/CT-06.png"
+      ],
+      "erros": []
+    },
+    {
+      "id": "CT-07",
+      "titulo": "CT-07 - cadastrar conta válida e fazer login",
+      "status": "passed",
+      "duracaoMs": 12180,
+      "ambiente": {
+        "navegador": "chromium",
+        "versao": "159.0.8154.6",
+        "url": "https://practicesoftwaretesting.com/account",
+        "titulo": "Overview - Practice Software Testing - Toolshop - v5.0"
+      },
+      "anexos": [
+        "capturas/CT-07.png"
+      ],
+      "erros": []
+    },
+    {
+      "id": "CT-08",
+      "titulo": "CT-08 - pesquisar produto existente",
+      "status": "passed",
+      "duracaoMs": 3208,
+      "ambiente": {
+        "navegador": "chromium",
+        "versao": "159.0.8154.6",
+        "url": "https://practicesoftwaretesting.com/",
+        "titulo": "Practice Software Testing - Toolshop - v5.0"
+      },
+      "anexos": [
+        "capturas/CT-08.png"
+      ],
+      "erros": []
+    },
+    {
+      "id": "CT-09",
+      "titulo": "CT-09 - pesquisar termo sem correspondência",
+      "status": "passed",
+      "duracaoMs": 3615,
+      "ambiente": {
+        "navegador": "chromium",
+        "versao": "159.0.8154.6",
+        "url": "https://practicesoftwaretesting.com/",
+        "titulo": "Practice Software Testing - Toolshop - v5.0"
+      },
+      "anexos": [
+        "capturas/CT-09.png"
+      ],
+      "erros": []
+    },
+    {
+      "id": "CT-10",
+      "titulo": "CT-10 - filtrar categoria e remover filtro",
+      "status": "passed",
+      "duracaoMs": 14789,
+      "ambiente": {
+        "navegador": "chromium",
+        "versao": "159.0.8154.6",
+        "url": "https://practicesoftwaretesting.com/",
+        "titulo": "Practice Software Testing - Toolshop - v5.0"
+      },
+      "anexos": [
+        "capturas/CT-10.png"
+      ],
+      "erros": []
+    },
+    {
+      "id": "SIM-01",
+      "titulo": "SIM-01 - busca vazia com resposta simulada",
+      "status": "passed",
+      "duracaoMs": 3645,
+      "ambiente": {
+        "navegador": "chromium",
+        "versao": "159.0.8154.6",
+        "url": "https://practicesoftwaretesting.com/",
+        "titulo": "Practice Software Testing - Toolshop - v5.0"
+      },
+      "anexos": [
+        "capturas/SIM-01.png"
+      ],
+      "erros": []
+    }
+  ]
+}
