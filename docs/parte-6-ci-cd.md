@@ -73,7 +73,21 @@ Na verificação de 23/11/2026, a instalação dos pacotes foi concluída, o wor
 
 A nova execução funcional ficou pendente: o download do navegador e o acesso à página inicial receberam HTTP 403 no ambiente utilizado. O resultado anterior da parte III pertence à execução local registrada naquele relatório.
 
-A primeira execução no GitHub precisa ser conferida na aba Actions. O link, o commit e o resultado dessa execução devem acompanhar as evidências da entrega.
+## Primeira execução no GitHub
+
+A [execução de 23/11/2026](https://github.com/BrunoFerreiraLyra/projeto-qualidade-software/actions/runs/45298754439), no commit `abc9acf`, executou os 11 casos: oito passaram e três falharam. Entre os dez casos reais, foram sete aprovações e três falhas; o SIM-01 foi aprovado. Os relatórios, as capturas e os traces foram armazenados no artefato da execução.
+
+Os três contextos de falha mostram a página de verificação do Cloudflare. Os traces também registram respostas HTTP 403 com o cabeçalho `cf-mitigated: challenge` nas páginas acessadas.
+
+| Caso | Evidência do trace |
+|---|---|
+| CT-01 | O login retornou HTTP 200. O acesso a `/account` recebeu HTTP 403 e mostrou a verificação do Cloudflare. |
+| CT-07 | O cadastro retornou HTTP 201. A página `/auth/login` recebeu HTTP 403 após o cadastro. |
+| CT-10 | A página de detalhe do produto recebeu HTTP 403, impedindo a conferência da categoria. |
+
+O resultado original permanece registrado como três falhas. A investigação identificou um bloqueio do ambiente público; esses erros não comprovam defeitos nas funcionalidades avaliadas. A conferência dos resultados reprovou os mesmos três casos, conforme os critérios definidos.
+
+Foi mantido o site público como ambiente avaliado, com o bloqueio do Cloudflare registrado como limitação desta execução. A instalação de uma cópia com Docker continua como alternativa proposta para um ambiente controlado, sem substituir os resultados obtidos no site público.
 
 ## Referências
 
@@ -81,3 +95,4 @@ A primeira execução no GitHub precisa ser conferida na aba Actions. O link, o 
 - [Proteção de branches](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches)
 - [Playwright em CI](https://playwright.dev/docs/ci)
 - [Relatórios do Playwright](https://playwright.dev/docs/test-reporters)
+- [Ambientes suportados pelos desafios do Cloudflare](https://developers.cloudflare.com/cloudflare-challenges/reference/supported-browsers/)
