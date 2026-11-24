@@ -3,7 +3,12 @@
   "version": "1.0.0",
   "description": "**Sistema escolhido:** [Practice Software Testing](https://practicesoftwaretesting.com/).",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "playwright test --project=chromium",
+    "test:headed": "playwright test --project=chromium --headed",
+    "test:ci": "playwright test --project=chromium --forbid-only",
+    "report": "playwright show-report"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/BrunoFerreiraLyra/projeto-qualidade-software.git"

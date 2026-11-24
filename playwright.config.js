@@ -5,6 +5,8 @@ module.exports = defineConfig({
   fullyParallel: false,
   workers: 1,
   timeout: 60000,
+  // Deixa tempo para salvar os relatórios antes do limite do job.
+  globalTimeout: 10 * 60 * 1000,
 
   expect: {
     timeout: 15000,
@@ -16,10 +18,11 @@ module.exports = defineConfig({
   reporter: [
     ['list'],
     ['html', { open: 'never' }],
+    ['json', { outputFile: 'test-results/results.json' }],
   ],
 
   use: {
-    baseURL: 'https://practicesoftwaretesting.com',
+    baseURL: process.env.TOOLSHOP_BASE_URL || 'https://practicesoftwaretesting.com',
     testIdAttribute: 'data-test',
     locale: 'en-US',
     screenshot: 'only-on-failure',
