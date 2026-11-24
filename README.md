@@ -1,72 +1,24 @@
 # Projeto de Testes e Qualidade de Software
 
-**Sistema escolhido:** [Practice Software Testing](https://practicesoftwaretesting.com/).
-
-**Entrega:** 23/11/2026 pelo Teams. **Apresentação:** 26/11/2026.
-
-## Sobre o projeto
-
-Vamos avaliar a qualidade desse site, que já existe. O grupo vai decidir quais funcionalidades testar, planejar e executar os testes, analisar os resultados e propor melhorias.
-
-Este repositório reúne o código dos testes e a documentação do trabalho.
+Avaliação do [Practice Software Testing (Toolshop)](https://practicesoftwaretesting.com/), com planejamento, testes, análise de código e gestão de defeitos.
 
 ## Divisão de tarefas
 
-Os seis integrantes devem escolher suas partes e preencher os responsáveis.
-
-| Parte | Responsável | O que precisa ser feito |
+| Parte | Responsável | Contribuição |
 |---|---|---|
-| 1. Planejamento | A definir | Combinar o escopo, a estratégia de verificação e validação, os riscos, as prioridades e os critérios para iniciar e encerrar os testes. |
-| 2. Testes manuais e exploratórios | A definir | Criar e executar casos manuais. Realizar sessões exploratórias com objetivo definido e registrar ações, resultados e evidências. |
-| 3. Testes automatizados | Artur Camara De Andarde Silva — 00000853139 | Desenvolver testes adequados ao escopo, analisar cobertura, justificar o uso de mocks/stubs e organizar os testes de regressão. |
-| 4. Qualidade de software | A definir | Revisar código, analisar métricas e code smells e propor refatorações. Propor a melhoria ou correção de uma funcionalidade, com critérios de qualidade e análise dos impactos. |
-| 5. Gestão de defeitos | A definir | Organizar os bugs encontrados pelo grupo, com passos para reproduzir, resultado esperado e observado, evidências, severidade, prioridade e acompanhamento. |
-| 6. CI/CD | Carlos Damasceno | Configurar ou apresentar uma proposta detalhada de pipeline com build, testes automáticos e critérios de aprovação. |
+| 1. Planejamento | A definir | Escopo, riscos, prioridades e critérios de início e encerramento dos testes. |
+| 2. Testes manuais e exploratórios | A definir | Casos de teste, sessões exploratórias, resultados e evidências. |
+| 3. Testes automatizados | Artur Camara De Andarde Silva | Evolução e execução da suíte, regressão, simulação de respostas e análise de cobertura. |
+| 4. Qualidade de software | Bruno Ferreira Lyra | Métricas, revisão de código e propostas de refatoração com análise de impacto. |
+| 5. Gestão de defeitos | Bruno Ferreira Lyra | Registro e acompanhamento dos defeitos, com evidências, severidade e prioridade. |
+| 6. CI/CD | Carlos Damasceno | Pipeline de testes, relatórios e critérios de aprovação. |
 
-As partes se complementam. Cada responsável desenvolve e explica sua contribuição, com apoio dos colegas quando necessário.
+**Contribuição inicial de Bruno:** preparação do ambiente Playwright e implementação da primeira versão dos testes CT-01 a CT-10 e SIM-01, preservadas em [versao-inicial](versao-inicial/). A suíte atual está em [tests](tests/).
 
-## Como começar e contribuir
+## Documentação
 
-1. Conhecer o site e combinar quais funcionalidades serão avaliadas.
-2. Escolher os responsáveis e as ferramentas que serão utilizadas.
-3. Desenvolver cada parte e enviar os arquivos para este repositório.
-4. Reunir os resultados no PDF e preparar a apresentação em grupo.
-
-Conforme o trabalho avançar, podem criar pastas como `docs/` para os textos, `tests/` para os testes e `evidencias/` para prints, logs e relatórios. Não há modelos obrigatórios: cada pessoa organiza sua parte de forma compreensível, sem sobrescrever o trabalho dos colegas.
-
-Registrem o ambiente, a data e quem executou os testes. As análises devem explicar o que foi feito, por quê e o que os resultados significam, respeitando as regras de autoria e uso de IA do enunciado.
-
-## Executar os testes
-
-Com Node.js 24 instalado, execute na raiz do projeto:
-
-```bash
-npm ci
-npx playwright install chromium
-npm test
-npm run report
-```
-
-Para acompanhar o navegador, use `npm run test:headed`. Depois de uma execução completa, `npm run check:results` confere os resultados dos 10 casos reais e do caso simulado.
-
-## Integração contínua
-
-O workflow em `.github/workflows/ci.yml` executa os testes em pull requests para `main`, em pushes para `main` e por acionamento manual na aba Actions. Os relatórios e as evidências ficam disponíveis por 14 dias.
-
-As etapas, os critérios de aprovação e a proposta de build e entrega estão em [CI/CD](docs/parte-6-ci-cd.md).
-
-## Entrega final
-
-O PDF deve reunir a identificação dos integrantes, as seis frentes do trabalho, a proposta de melhoria e seus impactos, as conclusões e as evidências. Incluam o link do repositório com acesso liberado. Todos participam da revisão e da apresentação.
-
-## Documentação da automação
-
-A suíte contempla CT-01 a CT-10 do planejamento e SIM-01 com stub. Consulte o [guia de execução](docs/guia-execucao.md), a [documentação da automação e cobertura](docs/testes-automatizados.md) e as [evidências da última execução](evidencias/ultima-execucao/resumo.md).
-
-Os comandos `test:smoke`, `test:regressao`, `test:stub`, `test:headed` e `test:ui` permitem selecionar ou acompanhar os testes. O cadastro cria uma conta fictícia por execução no ambiente de demonstração. Nenhum comando faz commit ou push.
-
-## Fontes do sistema
-
-- [Site para testar](https://practicesoftwaretesting.com/)
-- [Documentação da API](https://api.practicesoftwaretesting.com/api/documentation)
-- [Código original e instruções de instalação](https://github.com/testsmith-io/practice-software-testing)
+- [Guia de execução](docs/guia-execucao.md)
+- [Testes automatizados e cobertura](docs/testes-automatizados.md)
+- [CI/CD](docs/parte-6-ci-cd.md)
+- [Evidências da execução](evidencias/ultima-execucao/resumo.md)
+- [Código oficial do sistema avaliado](https://github.com/testsmith-io/practice-software-testing)
