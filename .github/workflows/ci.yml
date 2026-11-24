@@ -1,0 +1,69 @@
+name: CI - Toolshop
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Cancela a execução anterior quando a mesma referência recebe uma atualização.
+concurrency:
+  group: toolshop-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  testes:
+    name: Testes do Toolshop
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      CI: 'true'
+
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v6
+
+      - name: Preparar Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Verificar as regras de aprovação
+        run: npm run test:pipeline
+
+      - name: Instalar Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Registrar versões
+        run: |
+          node --version
+          npm --version
+          npx playwright --version
+
+      - name: Executar os testes do grupo
+        id: testes
+        run: npm run test:ci
+
+      # Confere o relatório mesmo se algum teste falhar.
+      - name: Conferir os 10 casos reais e o caso simulado
+        if: ${{ !cancelled() && steps.testes.outcome != 'skipped' }}
+        run: npm run check:results
+
+      - name: Guardar relatórios e evidências
+        if: ${{ !cancelled() && steps.testes.outcome != 'skipped' }}
+        uses: actions/upload-artifact@v5
+        with:
+          name: toolshop-relatorios-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: error
+          retention-days: 14
