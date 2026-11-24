@@ -59,7 +59,7 @@ jobs:
 
       - name: Guardar relatórios e evidências
         if: ${{ !cancelled() && steps.testes.outcome != 'skipped' }}
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: toolshop-relatorios-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
