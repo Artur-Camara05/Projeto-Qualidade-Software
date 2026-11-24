@@ -7,6 +7,8 @@
     "test": "playwright test --project=chromium",
     "test:headed": "playwright test --project=chromium --headed",
     "test:ci": "playwright test --project=chromium --forbid-only",
+    "test:pipeline": "node --test scripts/verificar-resultados.test.js",
+    "check:results": "node scripts/verificar-resultados.js",
     "report": "playwright show-report"
   },
   "repository": {
