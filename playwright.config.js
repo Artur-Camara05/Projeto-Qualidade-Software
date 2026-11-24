@@ -5,10 +5,14 @@ const path = require('node:path');
 module.exports = defineConfig({
   testDir: './tests',
   // O workspace usa OneDrive, que pode bloquear os arquivos ativos do trace.
-  outputDir: path.join(os.tmpdir(), 'toolshop-playwright', 'test-results'),
+  outputDir: process.env.CI
+    ? './test-results'
+    : path.join(os.tmpdir(), 'toolshop-playwright', 'test-results'),
   fullyParallel: false,
   workers: 1,
   timeout: 60000,
+  // Deixa tempo para salvar os relatórios antes do limite do job.
+  globalTimeout: 10 * 60 * 1000,
 
   expect: {
     timeout: 15000,
@@ -27,7 +31,8 @@ module.exports = defineConfig({
   ],
 
   use: {
-    baseURL: process.env.BASE_URL || 'https://practicesoftwaretesting.com',
+    baseURL: process.env.BASE_URL || process.env.TOOLSHOP_BASE_URL ||
+      'https://practicesoftwaretesting.com',
     testIdAttribute: 'data-test',
     locale: 'en-US',
     screenshot: 'only-on-failure',

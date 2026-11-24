@@ -8,7 +8,7 @@
 
 Vamos avaliar a qualidade desse site, que já existe. O grupo vai decidir quais funcionalidades testar, planejar e executar os testes, analisar os resultados e propor melhorias.
 
-Este repositório começa apenas com esta orientação. Os testes, documentos e análises serão desenvolvidos pelo grupo desde o início.
+Este repositório reúne o código dos testes e a documentação do trabalho.
 
 ## Divisão de tarefas
 
@@ -21,7 +21,7 @@ Os seis integrantes devem escolher suas partes e preencher os responsáveis.
 | 3. Testes automatizados | Artur Camara De Andarde Silva — 00000853139 | Desenvolver testes adequados ao escopo, analisar cobertura, justificar o uso de mocks/stubs e organizar os testes de regressão. |
 | 4. Qualidade de software | A definir | Revisar código, analisar métricas e code smells e propor refatorações. Propor a melhoria ou correção de uma funcionalidade, com critérios de qualidade e análise dos impactos. |
 | 5. Gestão de defeitos | A definir | Organizar os bugs encontrados pelo grupo, com passos para reproduzir, resultado esperado e observado, evidências, severidade, prioridade e acompanhamento. |
-| 6. CI/CD | A definir | Configurar ou apresentar uma proposta detalhada de pipeline com build, testes automáticos e critérios de aprovação. |
+| 6. CI/CD | Carlos Damasceno | Configurar ou apresentar uma proposta detalhada de pipeline com build, testes automáticos e critérios de aprovação. |
 
 As partes se complementam. Cada responsável desenvolve e explica sua contribuição, com apoio dos colegas quando necessário.
 
@@ -36,20 +36,30 @@ Conforme o trabalho avançar, podem criar pastas como `docs/` para os textos, `t
 
 Registrem o ambiente, a data e quem executou os testes. As análises devem explicar o que foi feito, por quê e o que os resultados significam, respeitando as regras de autoria e uso de IA do enunciado.
 
-## Entrega final
+## Executar os testes
 
-O PDF deve reunir a identificação dos integrantes, as seis frentes do trabalho, a proposta de melhoria e seus impactos, as conclusões e as evidências. Incluam o link do repositório com acesso liberado. Todos participam da revisão e da apresentação.
+Com Node.js 24 instalado, execute na raiz do projeto:
 
-## Executar os testes automatizados
-
-Na pasta que contém `package.json`:
-
-```powershell
+```bash
 npm ci
 npx playwright install chromium
 npm test
 npm run report
 ```
+
+Para acompanhar o navegador, use `npm run test:headed`. Depois de uma execução completa, `npm run check:results` confere os resultados dos 10 casos reais e do caso simulado.
+
+## Integração contínua
+
+O workflow em `.github/workflows/ci.yml` executa os testes em pull requests para `main`, em pushes para `main` e por acionamento manual na aba Actions. Os relatórios e as evidências ficam disponíveis por 14 dias.
+
+As etapas, os critérios de aprovação e a proposta de build e entrega estão em [CI/CD](docs/parte-6-ci-cd.md).
+
+## Entrega final
+
+O PDF deve reunir a identificação dos integrantes, as seis frentes do trabalho, a proposta de melhoria e seus impactos, as conclusões e as evidências. Incluam o link do repositório com acesso liberado. Todos participam da revisão e da apresentação.
+
+## Documentação da automação
 
 A suíte contempla CT-01 a CT-10 do planejamento e SIM-01 com stub. Consulte o [guia de execução](docs/guia-execucao.md), a [documentação da automação e cobertura](docs/testes-automatizados.md) e as [evidências da última execução](evidencias/ultima-execucao/resumo.md).
 
